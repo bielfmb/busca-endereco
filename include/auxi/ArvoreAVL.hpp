@@ -1,6 +1,7 @@
 #ifndef AUXI_ARVOREAVL_HPP
 #define AUXI_ARVOREAVL_HPP
 
+
 template <typename T, typename U>
 struct No {
     T chave;

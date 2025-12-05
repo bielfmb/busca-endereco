@@ -32,12 +32,15 @@ Consulta::Consulta(std::string linha, int numRespostas)
 
 Consulta::Consulta() : _id(-1), _numRespostas(-1) {}
 
-void Consulta::encontrarLogradouros(ArvoreAVL<int, Logradouro>& log) {
+void Consulta::consultar(Palavra* palavra, ArvoreAVL<int, Logradouro>& log) {
+    Vetor<int>* candidatos = this->_buscarCandidatos(palavra);
     Logradouro* l = nullptr;
     LogradouroDist ld;
 
-    for (int i = 0; i < this->_candidatos.getTamanho(); i++) {
-        l = log.buscar(*this->_candidatos.get(i));
+    if (candidatos == nullptr) return;
+
+    for (int i = 0; i < candidatos->getTamanho(); i++) {
+        l = log.buscar(*candidatos->get(i));
 
         if (l != nullptr) {
             double distancia = l->getCentro().distancia(this->_origem);
@@ -46,28 +49,8 @@ void Consulta::encontrarLogradouros(ArvoreAVL<int, Logradouro>& log) {
             this->_resultado.inserir(ld);
         }
     }
-}
 
-void Consulta::consultar(Palavra* palavra) {
-    Vetor<std::string>* consultas = this->_quebrarConsulta();
-
-    for (int i = 0; i < consultas->getTamanho(); i++) {
-        Vetor<int>* aux = palavra->buscarPalavra(*consultas->get(i));
-
-        if (aux == nullptr) {
-            this->_candidatos.limpar();
-            break;
-        }
-
-        if (this->_candidatos.getTamanho() <= 0) {
-            this->_candidatos = *aux;
-            continue;
-        }
-
-        this->_candidatos = *this->_candidatos.mesclarIguais(aux);
-    }
-    
-    delete consultas;
+    delete candidatos;
 }
 
 void Consulta::imprimir() {
@@ -85,6 +68,42 @@ void Consulta::imprimir() {
     }
 }
 
+Vetor<int>* Consulta::_buscarCandidatos(Palavra* palavra) {
+    Vetor<int>* candidatos = new Vetor<int>();
+    Vetor<std::string>* consultas = this->_quebrarConsulta();
+
+    if (consultas == nullptr) {
+        delete candidatos;
+        return nullptr;
+    }
+
+    for (int i = 0; i < consultas->getTamanho(); i++) {
+        Vetor<int>* aux = palavra->buscarPalavra(*consultas->get(i));
+
+        if (aux == nullptr) {
+            candidatos->limpar();
+            break;
+        }
+
+        if (candidatos->getTamanho() <= 0) {
+            *candidatos = *aux;
+            continue;
+        }
+
+        Vetor<int>* intersecao = candidatos->mesclarIguais(aux);
+        delete candidatos;
+        candidatos = intersecao;
+    }
+    
+    delete consultas;
+    if (candidatos->getTamanho() <= 0) {
+        delete candidatos;
+        return nullptr;
+    }
+
+    return candidatos;
+}
+
 Vetor<std::string>* Consulta::_quebrarConsulta() {
     Vetor<std::string>* palavras = new Vetor<std::string>();
     std::stringstream ss(this->_consulta);
@@ -93,5 +112,6 @@ Vetor<std::string>* Consulta::_quebrarConsulta() {
     while (ss >> segmento)
         palavras->inserir(segmento);
     
+    if (palavras->getTamanho() <= 0) return nullptr;
     return palavras;
 }

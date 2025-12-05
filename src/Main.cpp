@@ -11,17 +11,17 @@
 #include "consultas/Logradouro.hpp"
 #include "consultas/Palavra.hpp"
 
-ArvoreAVL<int, Logradouro>* carregarLogradouros(std::ifstream& entrada, Palavra& palavra) {
+ArvoreAVL<int, Logradouro>* carregarLogradouros(Palavra& palavra) {
     ArvoreAVL<int, Logradouro>* logs = new ArvoreAVL<int, Logradouro>();
     Endereco end;
     std::string endBruto;
 
     int numEnderecos;
-    if (!(entrada >> numEnderecos)) return nullptr;
+    if (!(std::cin >> numEnderecos)) return nullptr;
 
-    entrada.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     for (int i = 0; i < numEnderecos; i++) {
-        if (std::getline(entrada, endBruto)) {
+        if (std::getline(std::cin, endBruto)) {
             end.criar(endBruto);
             Logradouro* l = logs->buscar(end.idLog);
 
@@ -38,16 +38,16 @@ ArvoreAVL<int, Logradouro>* carregarLogradouros(std::ifstream& entrada, Palavra&
     return logs;
 }
 
-Vetor<Consulta>* carregarConsultas(std::ifstream& entrada) {
+Vetor<Consulta>* carregarConsultas() {
     int numConsultas, maxRespostas;    
-    if (!(entrada >> numConsultas >> maxRespostas)) return nullptr;
+    if (!(std::cin >> numConsultas >> maxRespostas)) return nullptr;
 
     Vetor<Consulta>* consultas = new Vetor<Consulta>();
     std::string consultaBruta;
 
-    entrada.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     for (int i = 0; i < numConsultas; i++) {
-        if (std::getline(entrada, consultaBruta)) {
+        if (std::getline(std::cin, consultaBruta)) {
             Consulta c(consultaBruta, maxRespostas);
             consultas->inserir(c);
         }
@@ -56,25 +56,17 @@ Vetor<Consulta>* carregarConsultas(std::ifstream& entrada) {
     return consultas;
 }
 
-int main(int argc, char* argv[]) {
-    const char* nomeArquivo = argv[1];
-
-    std::ifstream entrada;
-    entrada.open(nomeArquivo);
-
-    if (!entrada.is_open()) return 1;
-
+int main() {
     Palavra* palavra = new Palavra();
-    ArvoreAVL<int, Logradouro>* logs = carregarLogradouros(entrada, *palavra);
-    Vetor<Consulta>* consultas = carregarConsultas(entrada);
+    ArvoreAVL<int, Logradouro>* logs = carregarLogradouros(*palavra);
+    Vetor<Consulta>* consultas = carregarConsultas();
 
     palavra->ordenarLogradouros();
 
     std::cout << consultas->getTamanho() << std::endl;
 
     for (int i = 0; i < consultas->getTamanho(); i++) {
-        consultas->get(i)->consultar(palavra);
-        consultas->get(i)->encontrarLogradouros(*logs);
+        consultas->get(i)->consultar(palavra, *logs);
 
         consultas->get(i)->imprimir();
     }
@@ -83,6 +75,5 @@ int main(int argc, char* argv[]) {
     delete logs;
     delete consultas;
 
-    entrada.close();
     return 0;
 }

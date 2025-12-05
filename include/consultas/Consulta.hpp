@@ -15,17 +15,16 @@ class Consulta {
         Consulta(int id, int numRespostas, std::string consulta, Ponto origem);
         Consulta(std::string linha, int numRespostas);
         Consulta();
-        void consultar(Palavra* palavra);
-        void encontrarLogradouros(ArvoreAVL<int, Logradouro>& log);
+        void consultar(Palavra* palavra, ArvoreAVL<int, Logradouro>& log);
         void imprimir();
 
     private:
         int _id, _numRespostas;
         std::string _consulta;
         Ponto _origem;
-        Vetor<int> _candidatos;
         Vetor<LogradouroDist> _resultado;
 
+        Vetor<int>* _buscarCandidatos(Palavra* palavra);
         Vetor<std::string>* _quebrarConsulta();
 };
 
