@@ -16,6 +16,10 @@ struct LogradouroDist {
     bool operator > (const LogradouroDist& other) {
         return (this->distancia > other.distancia);
     }
+
+    bool operator <= (const LogradouroDist& other) {
+        return (this->distancia <= other.distancia);
+    }
 };
 
 #endif

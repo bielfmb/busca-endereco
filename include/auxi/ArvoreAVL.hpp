@@ -18,6 +18,7 @@ class ArvoreAVL {
     public:
         ArvoreAVL();
         ~ArvoreAVL();
+        ArvoreAVL(const ArvoreAVL&) = delete;
 
         void inserir(T& chave, U& dado);
         void limpar();
@@ -25,6 +26,7 @@ class ArvoreAVL {
         int getQuantElementos();
         typedef void (*Callback)(T& chave, U& dado, void* contexto);
         void paraCadaNo(Callback c, void* contexto);
+        ArvoreAVL<T,U>& operator = (const ArvoreAVL<T,U>& outra) = delete;
 
     private:
         No<T,U>* _raiz;
@@ -108,7 +110,6 @@ template <typename T, typename U>
 void ArvoreAVL<T,U>::paraCadaNo(Callback c, void* contexto) {
     this->_iterar(this->_raiz, c, contexto);
 }  
-
 
 template <typename T, typename U>
 void ArvoreAVL<T,U>::_atualizarAltura(No<T,U>* no) {
