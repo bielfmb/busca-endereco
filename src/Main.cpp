@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <limits>
 #include "auxi/ArvoreAVL.hpp"
 #include "auxi/Vetor.hpp"
 #include "auxi/Ponto.hpp"
@@ -18,6 +19,7 @@ ArvoreAVL<int, Logradouro>* carregarLogradouros(std::ifstream& entrada, Palavra&
     int numEnderecos;
     if (!(entrada >> numEnderecos)) return nullptr;
 
+    entrada.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     for (int i = 0; i < numEnderecos; i++) {
         if (std::getline(entrada, endBruto)) {
             end.criar(endBruto);
@@ -27,9 +29,10 @@ ArvoreAVL<int, Logradouro>* carregarLogradouros(std::ifstream& entrada, Palavra&
                 l = new Logradouro(end.idLog, end.log, end.tipoLog, end.coordenada);
                 logs->inserir(end.idLog, *l);
                 palavra.inserirPalavras(end.idLog, end.log);
+                
+                delete l;
             } 
-            else 
-                l->inserirCoordenada(end.coordenada);
+            else l->inserirCoordenada(end.coordenada);
         }
     }
     return logs;
@@ -42,9 +45,10 @@ Vetor<Consulta>* carregarConsultas(std::ifstream& entrada) {
     Vetor<Consulta>* consultas = new Vetor<Consulta>();
     std::string consultaBruta;
 
+    entrada.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     for (int i = 0; i < numConsultas; i++) {
         if (std::getline(entrada, consultaBruta)) {
-            Consulta c(consultaBruta);
+            Consulta c(consultaBruta, maxRespostas);
             consultas->inserir(c);
         }
     }
@@ -65,6 +69,8 @@ int main(int argc, char* argv[]) {
     Vetor<Consulta>* consultas = carregarConsultas(entrada);
 
     palavra->ordenarLogradouros();
+
+    std::cout << consultas->getTamanho() << std::endl;
 
     for (int i = 0; i < consultas->getTamanho(); i++) {
         consultas->get(i)->consultar(palavra);

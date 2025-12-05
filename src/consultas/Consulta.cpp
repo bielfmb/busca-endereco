@@ -6,7 +6,9 @@ Consulta::Consulta(int id, int numRespostas, std::string consulta, Ponto origem)
       _consulta(consulta),
       _origem(origem) {}
 
-Consulta::Consulta(std::string linha) {
+Consulta::Consulta(std::string linha, int numRespostas) 
+    : _numRespostas(numRespostas) 
+{
     std::stringstream ss(linha);
     std::string segmento;
 
@@ -30,7 +32,7 @@ Consulta::Consulta(std::string linha) {
 
 Consulta::Consulta() : _id(-1), _numRespostas(-1) {}
 
-void Consulta::encontrarLogradouros(ArvoreAVL<int, Logradouro> log) {
+void Consulta::encontrarLogradouros(ArvoreAVL<int, Logradouro>& log) {
     Logradouro* l = nullptr;
     LogradouroDist ld;
 
@@ -50,12 +52,18 @@ void Consulta::consultar(Palavra* palavra) {
     Vetor<std::string>* consultas = this->_quebrarConsulta();
 
     for (int i = 0; i < consultas->getTamanho(); i++) {
+        Vetor<int>* aux = palavra->buscarPalavra(*consultas->get(i));
+
+        if (aux == nullptr) {
+            this->_candidatos.limpar();
+            break;
+        }
+
         if (this->_candidatos.getTamanho() <= 0) {
-            this->_candidatos = *palavra->buscarPalavra(*consultas->get(i));
+            this->_candidatos = *aux;
             continue;
         }
-        
-        Vetor<int>* aux = palavra->buscarPalavra(*consultas->get(i));
+
         this->_candidatos = *this->_candidatos.mesclarIguais(aux);
     }
     
@@ -63,10 +71,14 @@ void Consulta::consultar(Palavra* palavra) {
 }
 
 void Consulta::imprimir() {
-    std::cout << this->_id << this->_resultado.getTamanho() << std::endl;
+    int quantImpressoes = (this->_resultado.getTamanho() < this->_numRespostas)
+                           ? this->_resultado.getTamanho()
+                           : this->_numRespostas;
+
+    std::cout << this->_id << ";" << quantImpressoes << std::endl;
 
     this->_resultado.ordenar();
-    for (int i = 0; i < _numRespostas; i++) {
+    for (int i = 0; i < quantImpressoes; i++) {
         std::cout << this->_resultado.get(i)->idLog << ";"
                   << this->_resultado.get(i)->nomeLog
                   << std::endl;

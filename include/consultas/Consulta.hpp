@@ -13,10 +13,10 @@
 class Consulta {
     public:
         Consulta(int id, int numRespostas, std::string consulta, Ponto origem);
-        Consulta(std::string linha);
+        Consulta(std::string linha, int numRespostas);
         Consulta();
         void consultar(Palavra* palavra);
-        void encontrarLogradouros(ArvoreAVL<int, Logradouro> log);
+        void encontrarLogradouros(ArvoreAVL<int, Logradouro>& log);
         void imprimir();
 
     private:
