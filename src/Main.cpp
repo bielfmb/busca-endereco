@@ -14,7 +14,7 @@
 
 /**
  * @brief Cria, a partir da entrada, a ÁrvoreAVL de logradouros retirados
- * dos endereços, além da instância principal de Palavra
+ * dos endereços, além de atualizar a instância principal de Palavra
  * 
  * @param palavra Possui todas as palavras dos nomes de todos os logradouros
  * e os identificadores deles em que as strings aparecem
