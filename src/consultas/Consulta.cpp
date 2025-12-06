@@ -1,10 +1,5 @@
 #include "consultas/Consulta.hpp"
 
-Consulta::Consulta(int id, int numRespostas, std::string consulta, Ponto origem)
-    : _id(id),
-      _numRespostas(numRespostas),
-      _consulta(consulta),
-      _origem(origem) {}
 
 Consulta::Consulta(std::string linha, int numRespostas) 
     : _numRespostas(numRespostas) 
@@ -42,6 +37,8 @@ void Consulta::consultar(Palavra* palavra, ArvoreAVL<int, Logradouro>& log) {
     for (int i = 0; i < candidatos->getTamanho(); i++) {
         l = log.buscar(*candidatos->get(i));
 
+        // NOTA: Caso a busca tenha um retorno, é adicionado um novo 
+        // LogradouroDist aos candidatos
         if (l != nullptr) {
             double distancia = l->getCentro().distancia(this->_origem);
             ld = {l->getId(), l->getNome(), distancia};
@@ -80,6 +77,8 @@ Vetor<int>* Consulta::_buscarCandidatos(Palavra* palavra) {
     for (int i = 0; i < consultas->getTamanho(); i++) {
         Vetor<int>* aux = palavra->buscarPalavra(*consultas->get(i));
 
+        // NOTA: Caso uma das buscas não obtenha resultados, não existem 
+        // logradouros com todas as palavras esperadas pela consulta.
         if (aux == nullptr) {
             candidatos->limpar();
             break;

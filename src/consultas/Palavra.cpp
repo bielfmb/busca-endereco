@@ -3,14 +3,14 @@
 
 Palavra::Palavra() {}
 
-Palavra::~Palavra() {}
-
 void Palavra::inserirPalavras(int idLog, std::string nomeLog) {
     Vetor<std::string>* logs = this->_quebrarTermo(nomeLog);
 
     for (int i = 0; i < logs->getTamanho(); i++) {
         Vetor<int>* busca = this->_palavras.buscar(*logs->get(i));
 
+        // NOTA: Se a busca encontrou resultado, é uma palavra já existente,
+        // senão é uma nova
         if (busca != nullptr) busca->inserir(idLog);
         else {
             Vetor<int> novosIds;
