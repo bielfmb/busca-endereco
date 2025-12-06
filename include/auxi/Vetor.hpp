@@ -1,28 +1,115 @@
 #ifndef AUXI_VETOR_HPP
 #define AUXI_VETOR_HPP
 
+
+/**
+ * @class Vetor
+ * 
+ * @brief Representa um array padrão, mas com tamanho dinâmico, ou seja,
+ * aumenta conforme elementos são inseridos.
+ */
 template <typename T>
 class Vetor {
     public:
+        /**
+         * @brief Construtor padrão de Vetor
+         */
         Vetor();
+
+        /**
+         * @brief Construtor de cópia de Vetor
+         */
         Vetor(const Vetor<T>& outro);
+
+        /**
+         * @brief Destrutor de Vetor
+         */
         ~Vetor();
 
+        /**
+         * @brief Adiciona um elemento ao final do vetor.
+         * 
+         * @param elemento Item a ser inserido.
+         * 
+         * @details Caso o vetor atual esteja cheio, seu conteúdo é copiado
+         * e ele é substituído por um array com o dobro da capacidade e 
+         */
         void inserir(T& elemento);
+
+        /**
+         * @brief Utiliza do algoritmo QuickSort para ordenar todo o vetor
+         */
         void ordenar();
+
+        /**
+         * @brief Libera a memória do vetor, restaurando-o para um array vazio   
+         */
         void limpar();
+
+        /**
+         * @brief Faz a interseção entre este vetor e o passado como parâmetro.
+         * Supõe-se que ambos os arrays estão ordenados.
+         * 
+         * @param outro Vetor para se verificar a interseção
+         * 
+         * @returns Vetor contendo apenas elementos presentes nos dois arrays  
+         */
         Vetor<T>* mesclarIguais(Vetor<T>* outro);
+
+        /**
+         * @brief Retorna o elemento que ocupa determinada posição
+         * 
+         * @param pos Posição do elemento que se deseja acessar
+         */
         T* get(int pos);
+
+        /**
+         * @brief Retorna a quantidade de elementos no vetor atual
+         */
         int getTamanho();
+
+        /**
+         * @brief Sobrecarrega o operador de atribuição.
+         * 
+         * @details Evita que apenas o endereço do vetor seja
+         * copiado
+         */     
         Vetor<T>& operator = (const Vetor<T>& outro);
 
     private:
-        T* _lista;
-        int _capacidade;
-        int _tamanho;
+        T* _lista; //!< Vetor que é redimensionado conforme o array cresce
+        int _capacidade; //!< Quantidade de elementos que o vetor suporta
+        int _tamanho; //!< Quantidade de elementos atualmente no vetor
 
+        /**
+         * @brief Ordena o vetor de forma crescente
+         * 
+         * @param esq Posição do elemento inicial da sub-lista.
+         * @param dir Posição do elemento final da sub-lista.
+         */
         void _quickSort(int esq, int dir);
+
+        /**
+         * @brief Particiona o sub-vetor, escolhendo um elemento como pivo
+         * e colocando os elementos menores antes dele e os maiores depois
+         * 
+         * @param esq Posição do elemento inicial da sub-lista.
+         * @param dir Posição do elemento final da sub-lista.
+         * @param i Ponteiro para o índice da esquerda (que será retornado).
+         * @param j Ponteiro para o índice da direita (que será retornado).
+         */        
         void _particao(int esq, int dir, int* i, int* j);
+
+        /**
+         * @brief Calcula o índice do pivô utilizando uma mediana de três
+         * para evitar o pior caso de O(n^2) do QuickSort.
+         * 
+         * @param a Índice do primeiro elemento.
+         * @param b Índice do elemento central.
+         * @param c Índice do último elemento.
+         * 
+         * @return O índice do elemento que representa a mediana.
+         */
         int _calcularPivo(int a, int b, int c);
 };
 
