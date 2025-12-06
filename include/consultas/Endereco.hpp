@@ -6,16 +6,29 @@
 #include <sstream>
 
 
+/**
+ * @struct Endereco
+ * 
+ * @brief Possui todos os dados de um enedereço físico.
+ * Utilizado para compor as instâncias de Palavra e Logradouro
+ */
 struct Endereco {
-    std::string idEnd;
-    int idLog;
-    int num;
-    int CEP;
-    Ponto coordenada;
-    std::string tipoLog, log;
-    std::string bairro, regiao;
+    std::string idEnd; //!< Identificador do endereço
+    int idLog; //!< Identificador do logradouro
+    int num; //!< Número da residência
+    int CEP; //!< Código de Endereçamento Postal do endereço 
+    Ponto coordenada; //!< Latitude e logitude do endereço
+    std::string tipoLog; //!< Se o logradouro é uma rua, avenida, praça, etc.
+    std::string log; //!< Nome do logradouro
+    std::string bairro, regiao; //!< Bairro do endereço (não log) e sua região
 
-    void criar(const std::string& linha) {
+    /**
+     * @brief Popula os dados do endereço a partir de uma string, separando os
+     * dados por ponto e vírgula
+     * 
+     * @param linha Endereço bruto passado pela entrada 
+     */
+    void criar(std::string& linha) {
         std::stringstream ss(linha);
         std::string segmento;
 
@@ -50,7 +63,7 @@ struct Endereco {
             std::getline(ss, segmento, ';'); 
             coordenada.longi = std::stod(segmento);
         } catch (const std::exception& e) {
-            std::cerr << "Erro fatal ao criar Endereco: " << e.what() << ". Dados incompletos ou inválidos." << std::endl;
+            std::cerr << e.what() << std::endl;
         }
     }
 };
