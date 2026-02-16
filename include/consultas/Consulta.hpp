@@ -11,7 +11,7 @@
 
 
 /**
- * @class
+ * @class Consulta
  * 
  * @brief Utiliza informações de Logradouro e Palavra para buscar os locais
  * mais próximos do pedido do cliente.
@@ -68,14 +68,18 @@ class Consulta {
          * @param palavra Objeto de que se retirará os ids dos logradouros 
          * que contêm todas as palavras a consulta.
          * 
-         * @returns Os ids dos logradouros candidatos 
+         * @returns Vetor criado dinamicamente com os ids dos logradouros 
+         * candidatos, passando para o chamador a responsabilidade de 
+         * gerenciamento de memória 
          */
         Vetor<int>* _buscarCandidatos(Palavra* palavra);
 
         /**
          * @brief Divide as palavras da consulta para uma busca eficiente
          * 
-         * @returns Vetor com todas as palavras do pedido
+         * @returns Vetor com todas as palavras do pedido criado de forma 
+         * dinâmica, passando para o chamador a responsabilidade de 
+         * gerenciamento de memória
          */
         Vetor<std::string>* _quebrarConsulta();
 };
